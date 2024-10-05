@@ -1,0 +1,45 @@
+/* Footer Styles */
+.footer {
+    @apply bg-off-white text-off-white py-6; /* Background and text styles */
+  }
+
+  .footerContainer {
+    @apply container mx-auto flex flex-col md:flex-row justify-between items-center px-4;
+  }
+
+.footerLeft,
+.footerRight {
+  @apply flex flex-col items-center md:items-start;
+}
+
+.footerLeft {
+  @apply mb-4 md:mb-0;
+}
+
+.footerLogo {
+  @apply text-2xl font-serif font-bold text-primary mb-2;
+}
+
+.footerTagline {
+  @apply text-sm font-sans italic text-off-white;
+}
+
+.footerNav {
+  @apply flex space-x-4 mt-4;
+}
+
+.footerNav a {
+    @apply text-off-white hover:text-light-green; /* Use hover with the light-green color */
+  }
+
+.footerSocial {
+  @apply flex space-x-4 mt-4;
+}
+
+.footerSocial a {
+  @apply text-off-white hover:text-light-green;
+}
+
+.footerCopyright {
+  @apply text-xs text-off-white mt-4 md:mt-0;
+}

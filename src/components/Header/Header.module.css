@@ -1,0 +1,28 @@
+
+  .header {
+    @apply bg-off-white text-text border-b border-gray-300;
+  }
+
+  .topBar {
+    @apply flex justify-between items-center py-4 px-6;
+  }
+
+  .logo h1 {
+    @apply text-2xl font-serif text-primary;
+  }
+
+  .navigation ul {
+    @apply flex space-x-6;
+  }
+
+  .navigation a {
+    @apply text-text hover:text-primary no-underline font-bold;
+  }
+
+  .valueProposition {
+    @apply bg-secondary text-off-white text-center py-6 px-4;
+  }
+
+  .valueProposition h2 {
+    @apply text-xl font-serif;
+  }
