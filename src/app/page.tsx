@@ -22,11 +22,10 @@ export default function Home() {
             <h3 className="text-xl font-semibold mb-2">Tech-Driven Strategies</h3>
             <p>Leveraging AI and emerging technologies for scalable growth.</p>
           </div>
-          // eslint-disable-next-line react/jsx-no-comment-textnodes
+         
           <div>
-            // eslint-disable-next-line react/react-in-jsx-scope
             <h3 className="text-xl font-semibold mb-2">Collective Success</h3>
-            <p>Our success is tied to your growth. We@babso;re in this together.</p>
+            <p>Our success is tied to your growth. We&apos;re in this together.</p>
           </div>
         </div>
       </section>

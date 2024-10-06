@@ -12,7 +12,7 @@ export default function Footer() {
         <div className={styles.footerLeft}>
           <div className={styles.footerLogo}>CorpInsights Collective</div>
           <div className={styles.footerTagline}>
-            @quot;Making impressions before they were even a metric.
+            &quot;Making impressions before they were even a metric.&quot;
           </div>
         </div>
 
@@ -20,13 +20,13 @@ export default function Footer() {
         <div className={styles.footerRight}>
           <nav className={styles.footerNav}>
             <Link href="/privacy-policy">
-              <a>Privacy Policy</a>
+              Privacy Policy
             </Link>
             <Link href="/terms-of-service">
-              <a>Terms of Service</a>
+              Terms of Service
             </Link>
             <Link href="/contact">
-              <a>Contact Us</a>
+              Contact Us
             </Link>
           </nav>
           <div className={styles.footerSocial}>

@@ -1,6 +1,6 @@
 /* Footer Styles */
 .footer {
-    @apply bg-off-white text-off-white py-6; /* Background and text styles */
+    @apply bg-secondary text-off-white py-6; /* Background and text styles */
   }
 
   .footerContainer {
