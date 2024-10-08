@@ -1,0 +1,69 @@
+.bgPattern {
+    background-color: #f8f8f8;
+    background-image: 
+      linear-gradient(30deg, #007373 12%, transparent 12.5%, transparent 87%, #007373 87.5%, #007373),
+      linear-gradient(150deg, #007373 12%, transparent 12.5%, transparent 87%, #007373 87.5%, #007373),
+      linear-gradient(30deg, #007373 12%, transparent 12.5%, transparent 87%, #007373 87.5%, #007373),
+      linear-gradient(150deg, #007373 12%, transparent 12.5%, transparent 87%, #007373 87.5%, #007373),
+      linear-gradient(60deg, #00737377 25%, transparent 25.5%, transparent 75%, #00737377 75%, #00737377),
+      linear-gradient(60deg, #00737377 25%, transparent 25.5%, transparent 75%, #00737377 75%, #00737377);
+    background-size: px 140px;
+    background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
+  }
+  
+  .honeycombPiece {
+    background-color: #ffffff;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .honeycombPiece:hover {
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  }
+  
+  .honeycombFront {
+    background-color: #007373;
+    color: #ffffff;
+  }
+  
+  .honeycombBack {
+    background-color: #ffffff;
+    color: #2B3A42;
+  }
+  
+  .centerPiece {
+    background-color: #FF6F4F;
+    padding: 2rem;
+    border-radius: 50%;
+    box-shadow: 0 10px 30px rgba(255, 111, 79, 0.3);
+  }
+  
+  .cta {
+    background-color: #FF6F4F;
+    color: #ffffff;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 5px 15px rgba(255, 111, 79, 0.3);
+  }
+  
+  .cta:hover {
+    background-color: #ff5c3a;
+    box-shadow: 0 8px 20px rgba(255, 111, 79, 0.4);
+  }
+  
+  .fullHero {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  }
+  
+  .fullHero h1 {
+    color: #2B3A42;
+    font-family: 'Playfair Display', serif;
+  }
+  
+  .fullHero p {
+    color: #4A4A4A;
+    font-family: 'Roboto', sans-serif;
+  }

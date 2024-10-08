@@ -1,0 +1,11 @@
+/* components/HeroSection/HoneycombPiece.module.css */
+
+.honeycombGroup {
+    /* Additional styles if needed */
+    transition: transform 0.3s ease;
+  }
+  
+  .honeycombGroup:hover {
+    /* Optional hover effects */
+  }
+  

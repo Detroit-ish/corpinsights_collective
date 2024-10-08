@@ -9,5 +9,15 @@ export default [
   {languageOptions: { globals: globals.browser }},
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
-  pluginReact.configs.flat.recommended,
-];
+  pluginReact.configs.flat.recommended];
+  module.exports = {
+    // ...other configurations
+    overrides: [
+      {
+        files: ['*.ts', '*.tsx'],
+        rules: {
+          'react/prop-types': 'off',
+        },
+      },
+    ],
+  };
