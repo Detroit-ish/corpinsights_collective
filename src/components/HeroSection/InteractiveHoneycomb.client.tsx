@@ -1,12 +1,13 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/no-unknown-property */
+// components/HeroSection/InteractiveHoneycomb.client.tsx
+
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import HoneycombPiece from './HoneycombPiece.client';
 import { GTMStage } from './types';
-import styles from './InteractiveHoneycomb.module.css';
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
+import { useSpring, animated, SpringValue } from '@react-spring/three';
 
 interface InteractiveHoneycombProps {
   stages: GTMStage[];
@@ -14,14 +15,22 @@ interface InteractiveHoneycombProps {
   honeycombSize?: number;
 }
 
-const InteractiveHoneycomb: React.FC<InteractiveHoneycombProps> = ({ 
-  stages, 
+const InteractiveHoneycomb: React.FC<InteractiveHoneycombProps> = ({
+  stages,
   onAllStagesActive,
-  honeycombSize = 1.8
+  honeycombSize = 1.8,
 }) => {
   const [activeStages, setActiveStages] = useState<Set<string>>(new Set());
+  const [merged, setMerged] = useState(false);
 
-  const handlePieceClick = useCallback((id: string) => {
+  useEffect(() => {
+    if (activeStages.size === stages.length) {
+      setMerged(true);
+      onAllStagesActive();
+    }
+  }, [activeStages, stages.length, onAllStagesActive]);
+
+  const handlePieceClick = (id: string) => {
     setActiveStages((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
@@ -29,45 +38,81 @@ const InteractiveHoneycomb: React.FC<InteractiveHoneycombProps> = ({
       } else {
         newSet.add(id);
       }
-      if (newSet.size === stages.length) {
-        onAllStagesActive();
-      }
       return newSet;
     });
-  }, [stages.length, onAllStagesActive]);
+  };
 
-  const calculatePosition = useCallback((index: number): [number, number, number] => {
-    const hexRadius = honeycombSize * 1.3; // Increased from 1.1 to 1.3
-    const positions: [number, number, number][] = [
-      [0, 2.2 * hexRadius, 0],  // Top
-      [-1.9 * hexRadius, 1.1 * hexRadius, 0],  // Top-left
-      [-1.9 * hexRadius, -1.1 * hexRadius, 0],  // Bottom-left
-      [0, -2.2 * hexRadius, 0],  // Bottom
-      [1.9 * hexRadius, -1.1 * hexRadius, 0],  // Bottom-right
-      [1.9 * hexRadius, 1.1 * hexRadius, 0],  // Top-right
-      [0, 0, 0]  // Center
+  const positions = useMemo(() => {
+    const hexRadius = honeycombSize * 1.5;
+    const positionsArray: [number, number, number][] = [
+      [0, 2.6 * hexRadius, 0], // Top
+      [-2.2 * hexRadius, 1.3 * hexRadius, 0], // Top-left
+      [-2.2 * hexRadius, -1.3 * hexRadius, 0], // Bottom-left
+      [0, -2.6 * hexRadius, 0], // Bottom
+      [2.2 * hexRadius, -1.3 * hexRadius, 0], // Bottom-right
+      [2.2 * hexRadius, 1.3 * hexRadius, 0], // Top-right
+      [0, 0, 0], // Center
     ];
-    
-    return positions[index % positions.length];
-  }, [honeycombSize]);
+    return positionsArray.slice(0, stages.length);
+  }, [honeycombSize, stages.length]);
+
+  // Merge animation
+  const mergeProps = useSpring<{ scale: [number, number, number] }>({
+    scale: merged ? [0, 0, 0] : [1, 1, 1],
+    config: { tension: 200, friction: 50 },
+  });
+
+  // Burst effect
+  const burstProps = useSpring<{
+    scale: [number, number, number];
+    opacity: number;
+  }>({
+    scale: merged ? [50, 50, 50] : [0, 0, 0],
+    opacity: merged ? 0 : 1,
+    config: { duration: 500 },
+  });
 
   return (
-    <div className={styles.canvasContainer}>
-      <Canvas camera={{ position: [0, 0, 20], fov: 50 }}>
+    <div className="w-full h-[500px] max-w-[800px] mx-auto my-8 rounded-2xl overflow-hidden shadow-lg bg-gradient-to-br from-white to-gray-100">
+      <Canvas camera={{ position: [0, 0, 25], fov: 50 }}>
         <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} intensity={0.8} />
-        {stages.map((stage, index) => (
-          <HoneycombPiece
-            key={stage.id}
-            stage={stage}
-            position={calculatePosition(index)}
-            color="#007373"
-            borderColor="#FF6F4F"
-            isActive={activeStages.has(stage.id)}
-            onClick={() => handlePieceClick(stage.id)}
-            size={honeycombSize}
+        <pointLight position={[10, 20, 10]} intensity={1} />
+        <EffectComposer>
+          <Bloom
+            intensity={1.5}
+            luminanceThreshold={0.2}
+            luminanceSmoothing={0.9}
+            height={300}
           />
-        ))}
+        </EffectComposer>
+
+        {/* Burst Effect */}
+        {merged && (
+          <animated.mesh scale={burstProps.scale}>
+            <animated.sphereBufferGeometry args={[1, 32, 32]} />
+            <animated.meshBasicMaterial
+              color="#FFFFFF"
+              transparent
+              opacity={burstProps.opacity}
+            />
+          </animated.mesh>
+        )}
+
+        {/* Honeycomb Pieces */}
+        <animated.group scale={mergeProps.scale}>
+          {stages.map((stage, index) => (
+            <HoneycombPiece
+              key={stage.id}
+              stage={stage}
+              position={positions[index]}
+              baseColor="#2b3a42"
+              borderColor="#FF6F4F"
+              isActive={activeStages.has(stage.id)}
+              onClick={() => handlePieceClick(stage.id)}
+              size={honeycombSize}
+            />
+          ))}
+        </animated.group>
       </Canvas>
     </div>
   );

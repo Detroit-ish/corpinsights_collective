@@ -20,6 +20,17 @@ const config: Config = {
         serif: ['Playfair Display', 'Georgia', 'serif'],
       },
     },
+    animation: {
+      float: 'float 6s ease-in-out infinite',
+      'float-slow': 'float 8s ease-in-out infinite',
+    },
+    keyframes: {
+      float: {
+        '0%': { transform: 'translateY(0) rotate(45deg)' },
+        '50%': { transform: 'translateY(-10px) rotate(45deg)' },
+        '100%': { transform: 'translateY(0) rotate(45deg)' },
+      },
+    },
   },
   plugins: [],
 };
