@@ -1,28 +1,52 @@
+/* src/components/Header/Header.module.css */
 
-  .header {
-    @apply bg-off-white text-text border-b border-gray-300;
-  }
+.header {
+  @apply bg-off-white text-text border-b border-gray-300;
+}
 
-  .topBar {
-    @apply flex justify-between items-center py-4 px-6;
-  }
+.topBar {
+  @apply flex justify-between items-center py-4 px-6;
+}
 
-  .logo h1 {
-    @apply text-2xl font-serif text-primary;
-  }
+.logo h1 {
+  @apply text-2xl font-serif text-primary;
+}
 
-  .navigation ul {
-    @apply flex space-x-6;
-  }
+.navigation ul {
+  @apply flex space-x-6;
+}
 
-  .navigation a {
-    @apply text-text hover:text-primary no-underline font-bold;
-  }
+.navigation a {
+  @apply text-text hover:text-primary no-underline font-bold;
+}
 
-  .valueProposition {
-    @apply bg-secondary text-off-white text-center py-6 px-4;
-  }
+.valueProposition {
+  @apply bg-secondary text-off-white text-center py-6 px-4;
+}
 
-  .valueProposition h2 {
-    @apply text-xl font-serif;
-  }
+.valueProposition h2 {
+  @apply text-xl font-serif;
+}
+
+/* Transition Styles */
+.fadeEnter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.fadeEnterActive {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 500ms, transform 500ms;
+}
+
+.fadeExit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fadeExitActive {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 500ms, transform 500ms;
+}

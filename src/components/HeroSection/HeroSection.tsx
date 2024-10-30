@@ -2,10 +2,10 @@
 
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
-import { gtmStage } from './gtmStages';
+import { gtmStages} from './gtmStages';
 
 const InteractiveHoneycomb = dynamic(() => import('./InteractiveHoneycomb.client'), {
   ssr: false,
@@ -14,15 +14,27 @@ const InteractiveHoneycomb = dynamic(() => import('./InteractiveHoneycomb.client
 
 const HeroSection: React.FC = () => {
   const [allActive, setAllActive] = useState(false);
+  const [transitionComplete, setTransitionComplete] = useState(false);
 
   const handleAllStagesActive = useCallback(() => {
     setAllActive(true);
   }, []);
 
+  useEffect(() => {
+    if (allActive) {
+      // Delay the transition to allow the burst animation to complete
+      const timer = setTimeout(() => {
+        setTransitionComplete(true);
+      }, 1500); // Adjust timing as needed
+
+      return () => clearTimeout(timer);
+    }
+  }, [allActive]);
+
   return (
-    <section className="relative min-h-screen flex flex-col justify-center items-center bg-gray-100 p-8 overflow-hidden">
+    <section className="relative min-h-screen flex flex-col justify-center items-center bg-gray-100 px-8 pb-8 overflow-hidden">
       <AnimatePresence mode="wait">
-        {!allActive ? (
+        {!transitionComplete ? (
           <motion.div
             key="interactive"
             initial={{ opacity: 0 }}
@@ -42,7 +54,7 @@ const HeroSection: React.FC = () => {
             </div>
 
             <InteractiveHoneycomb
-              stages={gtmStage}
+              stages={gtmStages}
               onAllStagesActive={handleAllStagesActive}
             />
 
@@ -52,13 +64,13 @@ const HeroSection: React.FC = () => {
           </motion.div>
         ) : (
           <motion.div
-            key="finalBanner"
+            key="fullHero"
             className="text-center z-10"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.6 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
           >
+            {/* Full hero section content */}
             <h2 className="font-serif text-4xl text-secondary mb-4">
               Your GTM Campaign is Ready to Launch!
             </h2>
@@ -73,6 +85,7 @@ const HeroSection: React.FC = () => {
       </AnimatePresence>
 
       <div className="absolute inset-0 pointer-events-none z-0">
+        {/* Decorative Elements */}
         <div className="absolute top-10 left-5 w-52 h-52 rounded-full border-2 border-primary opacity-10 animate-float"></div>
         <div className="absolute bottom-16 right-8 w-40 h-40 border-2 border-accent transform rotate-45 opacity-10 animate-float-slow"></div>
       </div>

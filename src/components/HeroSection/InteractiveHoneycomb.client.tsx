@@ -7,21 +7,21 @@ import { Canvas } from '@react-three/fiber';
 import HoneycombPiece from './HoneycombPiece.client';
 import { GTMStage } from './types';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
-import { useSpring, animated, SpringValue } from '@react-spring/three';
+import { useSpring, animated } from '@react-spring/three';
+import { Environment } from '@react-three/drei';
 
 interface InteractiveHoneycombProps {
   stages: GTMStage[];
   onAllStagesActive: () => void;
-  honeycombSize?: number;
 }
 
 const InteractiveHoneycomb: React.FC<InteractiveHoneycombProps> = ({
   stages,
   onAllStagesActive,
-  honeycombSize = 1.8,
 }) => {
   const [activeStages, setActiveStages] = useState<Set<string>>(new Set());
   const [merged, setMerged] = useState(false);
+  const honeycombSize = 7; // Increased size
 
   useEffect(() => {
     if (activeStages.size === stages.length) {
@@ -42,44 +42,52 @@ const InteractiveHoneycomb: React.FC<InteractiveHoneycombProps> = ({
     });
   };
 
+  // Arrange honeycombs horizontally with wrapping
   const positions = useMemo(() => {
-    const hexRadius = honeycombSize * 1.5;
-    const positionsArray: [number, number, number][] = [
-      [0, 2.6 * hexRadius, 0], // Top
-      [-2.2 * hexRadius, 1.3 * hexRadius, 0], // Top-left
-      [-2.2 * hexRadius, -1.3 * hexRadius, 0], // Bottom-left
-      [0, -2.6 * hexRadius, 0], // Bottom
-      [2.2 * hexRadius, -1.3 * hexRadius, 0], // Bottom-right
-      [2.2 * hexRadius, 1.3 * hexRadius, 0], // Top-right
-      [0, 0, 0], // Center
-    ];
-    return positionsArray.slice(0, stages.length);
+    const perRow = 3; // Adjusted based on larger size
+    const spacingX = honeycombSize * 2.2;
+    const spacingY = honeycombSize * 1.9;
+
+    return stages.map((_, index) => {
+      const row = Math.floor(index / perRow);
+      const col = index % perRow;
+      const offsetX = (row % 2) * (spacingX / 2); // Offset every other row
+      const x = (col - (perRow - 1) / 2) * spacingX + offsetX;
+      const y = -(row * spacingY);
+      return [x, y, 0] as [number, number, number];
+    });
   }, [honeycombSize, stages.length]);
 
   // Merge animation
-  const mergeProps = useSpring<{ scale: [number, number, number] }>({
-    scale: merged ? [0, 0, 0] : [1, 1, 1],
+  const mergeProps = useSpring<{ scale: number }>({
+    scale: merged ? 0 : 1,
     config: { tension: 200, friction: 50 },
   });
 
   // Burst effect
   const burstProps = useSpring<{
-    scale: [number, number, number];
+    scale: number;
     opacity: number;
   }>({
-    scale: merged ? [50, 50, 50] : [0, 0, 0],
+    scale: merged ? 20 : 0,
     opacity: merged ? 0 : 1,
-    config: { duration: 500 },
+    config: { duration: 800 },
   });
 
+  const cameraZ = honeycombSize * 10;
+
   return (
-    <div className="w-full h-[500px] max-w-[800px] mx-auto my-8 rounded-2xl overflow-hidden shadow-lg bg-gradient-to-br from-white to-gray-100">
-      <Canvas camera={{ position: [0, 0, 25], fov: 50 }}>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 20, 10]} intensity={1} />
+    <div className="w-full h-[800px] mx-auto overflow-hidden">
+      <Canvas camera={{ position: [0, 0, cameraZ], fov: 50 }}>
+        <ambientLight intensity={0.7} />
+        <directionalLight position={[10, 10, 5]} intensity={0.8} />
+
+        {/* Environment for Glassmorphism Effect */}
+        <Environment preset="sunset" />
+
         <EffectComposer>
           <Bloom
-            intensity={1.5}
+            intensity={1.2}
             luminanceThreshold={0.2}
             luminanceSmoothing={0.9}
             height={300}
@@ -89,9 +97,9 @@ const InteractiveHoneycomb: React.FC<InteractiveHoneycombProps> = ({
         {/* Burst Effect */}
         {merged && (
           <animated.mesh scale={burstProps.scale}>
-            <animated.sphereBufferGeometry args={[1, 32, 32]} />
+            <sphereBufferGeometry args={[1, 32, 32]} />
             <animated.meshBasicMaterial
-              color="#FFFFFF"
+              color="#FF6F4F"
               transparent
               opacity={burstProps.opacity}
             />
@@ -105,7 +113,7 @@ const InteractiveHoneycomb: React.FC<InteractiveHoneycombProps> = ({
               key={stage.id}
               stage={stage}
               position={positions[index]}
-              baseColor="#2b3a42"
+              baseColor="#ffffff"
               borderColor="#FF6F4F"
               isActive={activeStages.has(stage.id)}
               onClick={() => handlePieceClick(stage.id)}

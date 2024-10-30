@@ -2,9 +2,9 @@
 
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import { useFrame, extend } from '@react-three/fiber';
-import { Text } from '@react-three/drei';
+import { Text, Image } from '@react-three/drei';
 import * as THREE from 'three';
 import { GTMStage } from './types';
 
@@ -59,29 +59,19 @@ const HoneycombPiece: React.FC<HoneycombPieceProps> = ({
     }
   });
 
-  // Outer hexagon shape (border)
-  const hexShape = new THREE.Shape();
-  for (let i = 0; i < 6; i++) {
-    const angle = (Math.PI / 3) * i;
-    const x = Math.cos(angle) * size;
-    const y = Math.sin(angle) * size;
-    if (i === 0) hexShape.moveTo(x, y);
-    else hexShape.lineTo(x, y);
-  }
-  hexShape.closePath();
+  // Create the hexagon shape
+  const hexShape = useMemo(() => {
+    const shape = new THREE.Shape();
+    const sides = 6;
+    const angle = (Math.PI * 2) / sides;
 
-  // Inner hexagon shape (base)
-  const innerSize = size * 0.75;
+    shape.moveTo(size * Math.cos(0), size * Math.sin(0));
+    for (let i = 1; i <= sides; i++) {
+      shape.lineTo(size * Math.cos(i * angle), size * Math.sin(i * angle));
+    }
 
-  const innerHexShape = new THREE.Shape();
-  for (let i = 0; i < 6; i++) {
-    const angle = (Math.PI / 3) * i;
-    const x = Math.cos(angle) * innerSize;
-    const y = Math.sin(angle) * innerSize;
-    if (i === 0) innerHexShape.moveTo(x, y);
-    else innerHexShape.lineTo(x, y);
-  }
-  innerHexShape.closePath();
+    return shape;
+  }, [size]);
 
   const handlePointerOver = () => setHovered(true);
   const handlePointerOut = () => setHovered(false);
@@ -94,63 +84,50 @@ const HoneycombPiece: React.FC<HoneycombPieceProps> = ({
       onPointerOut={handlePointerOut}
       onClick={onClick}
     >
-      {/* Border Layer */}
+      {/* Honeycomb Base with Glassmorphism Effect */}
       <mesh>
         <extrudeGeometry
           args={[
             hexShape,
             {
-              depth: 0.3 * size,
+              depth: 0.5 * size,
               bevelEnabled: true,
-              bevelThickness: 0.05 * size,
-              bevelSize: 0.02 * size,
+              bevelThickness: 0.1 * size,
+              bevelSize: 0.05 * size,
             },
           ]}
         />
-        <meshStandardMaterial color={borderColor} />
-      </mesh>
-
-      {/* Inner Base Layer */}
-      <mesh position={[0, 0, 0.02 * size]}>
-        <extrudeGeometry
-          args={[
-            innerHexShape,
-            {
-              depth: 0.28 * size,
-              bevelEnabled: true,
-              bevelThickness: 0.04 * size,
-              bevelSize: 0.015 * size,
-            },
-          ]}
+        <meshPhysicalMaterial
+          color={baseColor}
+          transmission={0.9}
+          opacity={0.5}
+          transparent={true}
+          roughness={0}
+          metalness={0.1}
+          thickness={1}
+          envMapIntensity={1}
+          clearcoat={1}
+          clearcoatRoughness={0}
         />
-        <meshStandardMaterial color={baseColor} />
       </mesh>
 
-      {/* Front Text (Icon) */}
+      {/* Icon Image */}
       {!isActive && (
-        <Text
-          position={[0, 0, 0.4 * size]} // Moved text further out
-          fontSize={0.7 * size}
-          color="#FFFFFF" // Ensure high contrast
-          anchorX="center"
-          anchorY="middle"
-          outlineWidth={0.02 * size}
-          outlineColor="#000000"
-        >
-          {stage.icon || '🔍'} {/* Use a default icon if undefined */}
-        </Text>
-      )}
+  <group position={[0, 0, 0.26 * size]} scale={[1.5 * size, 1.5 * size, 1]}>
+    <Image url={`/icons/${stage.icon}`} />
+  </group>
+)}
 
       {/* Back Text (Description) */}
       {isActive && (
         <Text
-          position={[0, 0, -0.2 * size]}
+          position={[0, 0, -0.26 * size]}
           rotation={[0, Math.PI, 0]}
-          fontSize={0.25 * size}
+          fontSize={0.3 * size}
           color="#FFFFFF"
           anchorX="center"
           anchorY="middle"
-          maxWidth={1.6 * size}
+          maxWidth={1.8 * size}
           outlineWidth={0.01 * size}
           outlineColor="#000000"
         >
@@ -161,8 +138,8 @@ const HoneycombPiece: React.FC<HoneycombPieceProps> = ({
       {/* Title on Hover */}
       {hovered && !isActive && (
         <Text
-          position={[0, -1.8 * size, 0]} // Adjusted Y position
-          fontSize={0.3 * size}
+          position={[0, -1.4 * size, 0.26 * size]}
+          fontSize={0.35 * size}
           color="#FFFFFF"
           anchorX="center"
           anchorY="top"

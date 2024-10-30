@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="16" viewBox="0 0 64 16" xmlns="http://www.w3.org/2000/svg">
+  <!-- Skateboard Deck -->
+  <rect x="4" y="4" width="56" height="8" rx="4" ry="4" fill="#FF6F4F"/>
+
+  <!-- Left Wheel -->
+  <circle cx="16" cy="12" r="4" fill="#333333"/>
+
+  <!-- Right Wheel -->
+  <circle cx="48" cy="12" r="4" fill="#333333"/>
+
+  <!-- Left Wheel Hub -->
+  <circle cx="16" cy="12" r="2" fill="#FFFFFF"/>
+
+  <!-- Right Wheel Hub -->
+  <circle cx="48" cy="12" r="2" fill="#FFFFFF"/>
+</svg>
